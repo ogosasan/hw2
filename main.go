@@ -86,14 +86,20 @@ func main() {
 			if output == os.Stdout {
 				fmt.Println(count, originalLines[line])
 			} else {
-				output.WriteString(fmt.Sprintf("%d ", count) + originalLines[line] + "\n")
+				_, err := output.WriteString(fmt.Sprintf("%d ", count) + originalLines[line] + "\n")
+				if err != nil {
+					return
+				}
 			}
 		case *dPtr:
 			if count > 1 {
 				if output == os.Stdout {
 					fmt.Println(originalLines[line])
 				} else {
-					output.WriteString(originalLines[line] + "\n")
+					_, err := output.WriteString(originalLines[line] + "\n")
+					if err != nil {
+						return
+					}
 				}
 			}
 		case *uPtr:
@@ -101,16 +107,23 @@ func main() {
 				if output == os.Stdout {
 					fmt.Println(originalLines[line])
 				} else {
-					output.WriteString(originalLines[line] + "\n")
+					_, err := output.WriteString(originalLines[line] + "\n")
+					if err != nil {
+						return
+					}
 				}
 			}
 		default:
 			if output == os.Stdout {
 				fmt.Println(originalLines[line])
 			} else {
-				output.WriteString(originalLines[line] + "\n")
+				_, err := output.WriteString(originalLines[line] + "\n")
+				if err != nil {
+					return
+				}
 			}
 
 		}
 	}
 }
+
