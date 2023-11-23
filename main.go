@@ -1,5 +1,4 @@
 package main
-
 import (
 	"bufio"
 	"flag"
@@ -8,7 +7,7 @@ import (
 	"strings"
 )
 
-func main() {
+func processInputArguments() (*bool, *bool, *bool, *bool, *int, *int) {
 	cPtr := flag.Bool("c", false, "a bool")
 	dPtr := flag.Bool("d", false, "a bool")
 	uPtr := flag.Bool("u", false, "a bool")
@@ -17,40 +16,35 @@ func main() {
 	sPtr := flag.Int("s", 0, "an int")
 
 	flag.Parse()
-	if *cPtr && *dPtr || *cPtr && *uPtr || *uPtr && *dPtr {
-		fmt.Println("Error flags")
-		os.Exit(1)
-	}
 
-	var input *os.File
-	var output *os.File
+	return cPtr, dPtr, uPtr, iPtr, fPtr, sPtr
+}
 
-	if len(flag.Args()) > 0 {
-		inputFile, err := os.Open(flag.Arg(0))
+func openInputFile(fileName string) (*os.File, error) {
+	if fileName != "" {
+		inputFile, err := os.Open(fileName)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error opening input file: %v\n", err)
-			os.Exit(1)
+			return nil, err
 		}
-		defer inputFile.Close()
-		input = inputFile
-	} else {
-		input = os.Stdin
+		return inputFile, nil
 	}
-	if len(flag.Args()) > 1 {
-		outputFile, err := os.Create(flag.Arg(1))
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error creating output file: %v\n", err)
-			os.Exit(1)
-		}
-		defer outputFile.Close()
-		output = outputFile
-	} else {
-		output = os.Stdout
-	}
+	return os.Stdin, nil
+}
 
+func createOutputFile(fileName string) (*os.File, error) {
+	if fileName != "" {
+		outputFile, err := os.Create(fileName)
+		if err != nil {
+			return nil, err
+		}
+		return outputFile, nil
+	}
+	return os.Stdout, nil
+}
+func processInput(scanner *bufio.Scanner, iPtr *bool, fPtr, sPtr *int) (map[string]int, map[string]string) {
 	lineCount := make(map[string]int)
 	originalLines := make(map[string]string)
-	scanner := bufio.NewScanner(input)
+
 	for scanner.Scan() {
 		line := scanner.Text()
 		originalLine := line
@@ -66,7 +60,6 @@ func main() {
 			} else {
 				line = ""
 			}
-
 		}
 		if *sPtr > 0 {
 			if *sPtr < len(line) {
@@ -80,6 +73,10 @@ func main() {
 			originalLines[line] = originalLine
 		}
 	}
+	return lineCount, originalLines
+}
+
+func outProcess(output *os.File, cPtr, uPtr, dPtr *bool, lineCount map[string]int, originalLines map[string]string) {
 	for line, count := range lineCount {
 		switch {
 		case *cPtr:
@@ -96,12 +93,10 @@ func main() {
 				if output == os.Stdout {
 					fmt.Println(originalLines[line])
 				} else {
-					_, err := output.WriteString(originalLines[line] + "\n")
+					_, err := output.WriteString(originalLines[line])
 					if err != nil {
 						return
-					}
-				}
-			}
+					}}}
 		case *uPtr:
 			if count == 1 {
 				if output == os.Stdout {
@@ -110,9 +105,7 @@ func main() {
 					_, err := output.WriteString(originalLines[line] + "\n")
 					if err != nil {
 						return
-					}
-				}
-			}
+					}}}
 		default:
 			if output == os.Stdout {
 				fmt.Println(originalLines[line])
@@ -120,10 +113,31 @@ func main() {
 				_, err := output.WriteString(originalLines[line] + "\n")
 				if err != nil {
 					return
-				}
-			}
+				}}}}
 
-		}
+func main() {
+	cPtr, dPtr, uPtr, iPtr, fPtr, sPtr := processInputArguments()
+
+	if *cPtr && *dPtr || *cPtr && *uPtr || *uPtr && *dPtr {
+		fmt.Println("Error flags")
+		os.Exit(1)
 	}
-}
+	input, err := openInputFile(flag.Arg(0))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error opening input file: %v\n", err)
+		os.Exit(1)
+	}
+	defer input.Close()
 
+	output, err := createOutputFile(flag.Arg(1))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error creating output file: %v\n", err)
+		os.Exit(1)
+	}
+	defer output.Close()
+
+	scanner := bufio.NewScanner(input)
+	lineCount, originalLines := processInput(scanner, iPtr, fPtr, sPtr)
+
+	outProcess(output, cPtr, uPtr, dPtr, lineCount, originalLines)
+}
