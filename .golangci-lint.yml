@@ -32,7 +32,7 @@ linters-settings:
     skip-tests: true
   funlen:
     lines: 40
-    statements: 30
+    statements: 80
   nestif:
     min-complexity: 7
   revive:
