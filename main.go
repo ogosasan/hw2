@@ -113,7 +113,7 @@ func outProcess(output *os.File, cPtr, uPtr, dPtr *bool, lineCount map[string]in
 				_, err := output.WriteString(originalLines[line] + "\n")
 				if err != nil {
 					return
-				}}}}
+				}}}}}
 
 func main() {
 	cPtr, dPtr, uPtr, iPtr, fPtr, sPtr := processInputArguments()
