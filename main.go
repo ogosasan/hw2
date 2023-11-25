@@ -25,11 +25,9 @@ func processInput(scanner *bufio.Scanner, iPtr *bool, fPtr, sPtr *int) ([]LineIn
 	for scanner.Scan() {
 		line := scanner.Text()
 		originalLine := line
-
 		if *iPtr {
 			line = strings.ToLower(line)
 		}
-
 		fields := strings.Fields(line)
 		if *fPtr > 0 {
 			if *fPtr < len(fields) {
@@ -45,7 +43,6 @@ func processInput(scanner *bufio.Scanner, iPtr *bool, fPtr, sPtr *int) ([]LineIn
 				line = ""
 			}
 		}
-
 		found := false
 		for i, l := range lines {
 			if l.Line == line {
