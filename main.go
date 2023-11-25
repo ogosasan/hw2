@@ -76,7 +76,7 @@ func outProcess(output *os.File, cPtr, uPtr, dPtr *bool, lines []LineInfo, origi
 				if output == os.Stdout {
 					fmt.Println(originalLines[i].OriginalLine)
 				} else {
-					_, err := output.WriteString(originalLines[i].OriginalLine)
+					_, err := output.WriteString(originalLines[i].OriginalLine + "\n")
 					if err != nil {
 						return
 					}}}
