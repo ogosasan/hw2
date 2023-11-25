@@ -79,9 +79,7 @@ func outProcess(output *os.File, cPtr, uPtr, dPtr *bool, lines []LineInfo, origi
 					_, err := output.WriteString(originalLines[i].OriginalLine)
 					if err != nil {
 						return
-					}
-				}
-			}
+					}}}
 		case *uPtr:
 			if line.Count == 1 {
 				if output == os.Stdout {
@@ -90,9 +88,7 @@ func outProcess(output *os.File, cPtr, uPtr, dPtr *bool, lines []LineInfo, origi
 					_, err := output.WriteString(originalLines[i].OriginalLine + "\n")
 					if err != nil {
 						return
-					}
-				}
-			}
+					}}}
 		default:
 			if output == os.Stdout {
 				fmt.Println(originalLines[i].OriginalLine)
@@ -100,12 +96,7 @@ func outProcess(output *os.File, cPtr, uPtr, dPtr *bool, lines []LineInfo, origi
 				_, err := output.WriteString(originalLines[i].OriginalLine + "\n")
 				if err != nil {
 					return
-				}
-			}
-		}
-	}
-}
-
+				}}}}}
 func processInputArguments() (*bool, *bool, *bool, *bool, *int, *int) {
 	cPtr := flag.Bool("c", false, "a bool")
 	dPtr := flag.Bool("d", false, "a bool")
@@ -154,14 +145,12 @@ func main() {
 		os.Exit(1)
 	}
 	defer input.Close()
-
 	output, err := createOutputFile(flag.Arg(1))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error creating output file: %v\n", err)
 		os.Exit(1)
 	}
 	defer output.Close()
-
 	scanner := bufio.NewScanner(input)
 	lineCount, originalLines := processInput(scanner, iPtr, fPtr, sPtr)
 
