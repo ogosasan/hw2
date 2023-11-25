@@ -68,8 +68,7 @@ func outProcess(output *os.File, cPtr, uPtr, dPtr *bool, lines []LineInfo, origi
 				_, err := output.WriteString(fmt.Sprintf("%d ", line.Count) + originalLines[i].OriginalLine + "\n")
 				if err != nil {
 					return
-				}
-			}
+				}}
 		case *dPtr:
 			if line.Count > 1 {
 				if output == os.Stdout {
